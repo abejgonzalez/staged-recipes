@@ -2,4 +2,4 @@
 
 set -ex
 
-./build-toolchains.sh --prefix $PREFIX/riscv
+./src/build-toolchains.sh --prefix $PREFIX/riscv
