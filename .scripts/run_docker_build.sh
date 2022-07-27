@@ -52,9 +52,9 @@ docker run ${DOCKER_RUN_ARGS} \
            -e CONFIG \
            -e CI \
            -e DEFAULT_LINUX_VERSION \
+           -e CPU_COUNT \
            "${DOCKER_IMAGE}" \
-           bash \
-           "/home/conda/staged-recipes/${PROVIDER_DIR}/build_steps.sh"
+           bash
 
 # verify that the end of the script was reached
 test -f "$DONE_CANARY"
