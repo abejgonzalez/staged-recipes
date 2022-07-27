@@ -15,7 +15,7 @@ package:
 source:
   - folder: src
     git_url: https://github.com/abejgonzalez/ucb-bar-riscv-tools.git
-    git_rev: cebd0787b0ed763842b4b7acb0854305ed21e38d
+    git_rev: d64e7a49f166d21a84e71f3e34637c46def4903a
 
 build:
   number: 1
