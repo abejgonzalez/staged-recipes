@@ -2,4 +2,4 @@
 
 set -ex
 
-./src/build-toolchains.sh --prefix $PREFIX/riscv
+NPROC=$CPU_COUNT ./src/build-toolchains.sh --prefix $PREFIX/riscv
