@@ -6,7 +6,7 @@
 # Using the name variable with the URL in line 14 is convenient
 # when copying and pasting from another recipe, but not really needed.
 {% set name = "ucb-bar-riscv-tools" %}
-{% set version = "1.7.1" %}
+{% set version = "9.2.0" %}
 
 package:
   name: {{ name|lower }}
@@ -15,7 +15,7 @@ package:
 source:
   - folder: src
     git_url: https://github.com/abejgonzalez/ucb-bar-riscv-tools.git
-    git_rev: 3ac6471311892fc5d1020a1e1701dcc2c02c9077
+    git_rev: 28747885533a782b024d9d660d9d5786e552bb02
 
 build:
   number: 1
@@ -38,9 +38,9 @@ requirements:
     #       |                                          ~~~~^~~~~~~
     #
     # pin to gcc=10 until we get that fixed.
-    - gcc_linux-64=10
-    - gxx_linux-64=10
-    - binutils_linux-64
+    - gcc=10
+    - gxx=10
+    - binutils
     - gawk
     # if building riscv-toolchain from source, we need to use bison=3.4 until we have
     # https://github.com/riscv-collab/riscv-binutils-gdb/commit/314ec7aeeb1b2e68f0d8fb9990f2335f475a6e33
@@ -54,18 +54,16 @@ requirements:
     - zlib
     - ncurses
     - make
+    - dtc
 
-    # qemu deps
+    # extra qemu deps
     - gtk3
     - glib
     - pkg-config
-    - bison
     - flex
     - expat
     - autoconf
     - automake
-
-  host:
     # qemu also requires being built against kernel-headers >= 2.6.38 because of it's use of
     # MADV_NOHUGEPAGE in a call to madvise.  See:
     # https://man7.org/linux/man-pages/man2/madvise.2.html
@@ -73,9 +71,45 @@ requirements:
     # obvi this would need to be made linux-specific if we supported other MacOS or Windows
     - kernel-headers_linux-64>=2.6.38
 
+    # extra (probably not needed)
+      #- python=3.8
+      #- subversion
+    - chrpath
+      #- wget
+      #- rsync
+      #- psutil
+      #- doit
+      #- gitpython
+      #- humanfriendly
+    - e2fsprogs
+      #- ctags
+    - libtool
+    - ca-certificates
+    - gengetopt
+    - libffi
+    - libusb1
+      #- cmake
+    - expect
+      #- sphinx
+      #- pygments
+      #- sphinx-autobuild
+      #- sphinx_rtd_theme
+      #- docutils
+      #- sbt
+      #- verilator==4.034
+      #- vim
+
+      ## qemu specific host needs
+      #host:
+      #  - glib
+      #  - pixman
+      #  - zstd
+      #  - zlib
+      #  - libcurl
+
 test:
   commands:
-    - test "$($PREFIX/riscv/bin/riscv64-unknown-elf-gcc -dumpversion).rvv" = "$PKG_VERSION"
+    - test "$($PREFIX/riscv/bin/riscv64-unknown-elf-gcc -dumpversion)" = "$PKG_VERSION"
 
 about:
   home: https://github.com/abejgonzalez/ucb-bar-riscv-tools
