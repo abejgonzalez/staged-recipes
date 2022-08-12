@@ -15,81 +15,81 @@ package:
 source:
   - folder: src
     git_url: https://github.com/abejgonzalez/ucb-bar-riscv-tools.git
-    git_rev: 28747885533a782b024d9d660d9d5786e552bb02
+    git_rev: b780fc8c68a7edb6b9823ef4f21fd1d57a911902
 
 build:
-  number: 1
+  number: 0
   skip: True # [not linux]
+
+# https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html#using-the-compiler-packages
+#    for notes on using the conda compilers
+# elfutils has trouble building with gcc 11 for something that looks like it needs to be fixed upstream
+# ebl_syscall_abi.c:37:64: error: argument 5 of type 'int *' declared as a pointer [-Werror=array-parameter=]
+#    37 | ebl_syscall_abi (Ebl *ebl, int *sp, int *pc, int *callno, int *args)
+#       |                                                           ~~~~~^~~~
+# In file included from ./../libasm/libasm.h:35,
+#                  from ./libeblP.h:33,
+#                  from ebl_syscall_abi.c:33:
+# ./libebl.h:254:46: note: previously declared as an array 'int[6]'
+#   254 |                             int *callno, int args[6]);
+#       |                                          ~~~~^~~~~~~
+#
+# pin to gcc=10 until we get that fixed.
+c_compiler_version:    # [linux]
+  - 10                 # [linux]
+cxx_compiler_version:  # [linux]
+  - 10                 # [linux]
 
 requirements:
   build:
     # toolchain deps
-    # https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html#using-the-compiler-packages
-    #    for notes on using the conda compilers
-    # elfutils has trouble building with gcc 11 for something that looks like it needs to be fixed upstream
-    # ebl_syscall_abi.c:37:64: error: argument 5 of type 'int *' declared as a pointer [-Werror=array-parameter=]
-    #    37 | ebl_syscall_abi (Ebl *ebl, int *sp, int *pc, int *callno, int *args)
-    #       |                                                           ~~~~~^~~~
-    # In file included from ./../libasm/libasm.h:35,
-    #                  from ./libeblP.h:33,
-    #                  from ebl_syscall_abi.c:33:
-    # ./libebl.h:254:46: note: previously declared as an array 'int[6]'
-    #   254 |                             int *callno, int args[6]);
-    #       |                                          ~~~~^~~~~~~
-    #
-    # pin to gcc=10 until we get that fixed.
-    - gcc=10
-    - gxx=10
-    - binutils
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - gawk
     # if building riscv-toolchain from source, we need to use bison=3.4 until we have
     # https://github.com/riscv-collab/riscv-binutils-gdb/commit/314ec7aeeb1b2e68f0d8fb9990f2335f475a6e33
     - bison=3.4
     - patch
-    - texinfo
     - git
-    - gmp
-    - mpfr
-    - mpc
-    - zlib
-    - ncurses
     - make
     - dtc
+    - binutils
+    - texinfo
 
     # extra qemu deps
-    - gtk3
-    - glib
-    - pkg-config
-    - flex
-    - expat
-    - autoconf
-    - automake
-    # qemu also requires being built against kernel-headers >= 2.6.38 because of it's use of
-    # MADV_NOHUGEPAGE in a call to madvise.  See:
-    # https://man7.org/linux/man-pages/man2/madvise.2.html
-    # https://conda-forge.org/docs/maintainer/knowledge_base.html#using-centos-7
-    # obvi this would need to be made linux-specific if we supported other MacOS or Windows
-    - kernel-headers_linux-64>=2.6.38
+    #- gtk3
+    #- glib
+    #- pkg-config
+    #- flex
+    #  #- expat
+    #- autoconf
+    #- automake
+    ## qemu also requires being built against kernel-headers >= 2.6.38 because of it's use of
+    ## MADV_NOHUGEPAGE in a call to madvise.  See:
+    ## https://man7.org/linux/man-pages/man2/madvise.2.html
+    ## https://conda-forge.org/docs/maintainer/knowledge_base.html#using-centos-7
+    ## obvi this would need to be made linux-specific if we supported other MacOS or Windows
+    #- kernel-headers_linux-64>=2.6.38
 
     # extra (probably not needed)
-      #- python=3.8
+    - python=3.8
       #- subversion
-    - chrpath
+      #- chrpath
       #- wget
       #- rsync
       #- psutil
       #- doit
       #- gitpython
       #- humanfriendly
-    - e2fsprogs
+      #- e2fsprogs
       #- ctags
     - libtool
-    - ca-certificates
-    - gengetopt
-    - libffi
-    - libusb1
+      #- ca-certificates
+      #- gengetopt
+      #- libffi
+      #- libusb1
       #- cmake
-    - expect
+      #- expect
       #- sphinx
       #- pygments
       #- sphinx-autobuild
@@ -98,6 +98,13 @@ requirements:
       #- sbt
       #- verilator==4.034
       #- vim
+  host:
+    - expat
+    - ncurses
+    - gmp
+    - mpfr
+    - mpc
+    - zlib
 
       ## qemu specific host needs
       #host:
