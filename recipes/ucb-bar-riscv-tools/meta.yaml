@@ -21,25 +21,6 @@ build:
   number: 0
   skip: True # [not linux]
 
-# https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html#using-the-compiler-packages
-#    for notes on using the conda compilers
-# elfutils has trouble building with gcc 11 for something that looks like it needs to be fixed upstream
-# ebl_syscall_abi.c:37:64: error: argument 5 of type 'int *' declared as a pointer [-Werror=array-parameter=]
-#    37 | ebl_syscall_abi (Ebl *ebl, int *sp, int *pc, int *callno, int *args)
-#       |                                                           ~~~~~^~~~
-# In file included from ./../libasm/libasm.h:35,
-#                  from ./libeblP.h:33,
-#                  from ebl_syscall_abi.c:33:
-# ./libebl.h:254:46: note: previously declared as an array 'int[6]'
-#   254 |                             int *callno, int args[6]);
-#       |                                          ~~~~^~~~~~~
-#
-# pin to gcc=10 until we get that fixed.
-c_compiler_version:    # [linux]
-  - 10                 # [linux]
-cxx_compiler_version:  # [linux]
-  - 10                 # [linux]
-
 requirements:
   build:
     # toolchain deps
