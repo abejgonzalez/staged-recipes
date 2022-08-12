@@ -21,34 +21,17 @@ build:
   number: 0
   skip: True # [not linux]
 
-# https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html#using-the-compiler-packages
-#    for notes on using the conda compilers
-# elfutils has trouble building with gcc 11 for something that looks like it needs to be fixed upstream
-# ebl_syscall_abi.c:37:64: error: argument 5 of type 'int *' declared as a pointer [-Werror=array-parameter=]
-#    37 | ebl_syscall_abi (Ebl *ebl, int *sp, int *pc, int *callno, int *args)
-#       |                                                           ~~~~~^~~~
-# In file included from ./../libasm/libasm.h:35,
-#                  from ./libeblP.h:33,
-#                  from ebl_syscall_abi.c:33:
-# ./libebl.h:254:46: note: previously declared as an array 'int[6]'
-#   254 |                             int *callno, int args[6]);
-#       |                                          ~~~~^~~~~~~
-#
-# pin to gcc=10 until we get that fixed.
-c_compiler_version:    # [linux]
-  - 10                 # [linux]
-cxx_compiler_version:  # [linux]
-  - 10                 # [linux]
-
 requirements:
   build:
     # toolchain deps
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - gcc ==10.*
+    - gxx ==10.*
+    - binutils
+    - conda-gcc-specs
     - gawk
     # if building riscv-toolchain from source, we need to use bison=3.4 until we have
     # https://github.com/riscv-collab/riscv-binutils-gdb/commit/314ec7aeeb1b2e68f0d8fb9990f2335f475a6e33
-    - bison=3.4
+    - bison ==3.4.*
     - patch
     - git
     - make
@@ -72,7 +55,7 @@ requirements:
     #- kernel-headers_linux-64>=2.6.38
 
     # extra (probably not needed)
-    - python=3.8
+    - python ==3.8.*
       #- subversion
       #- chrpath
       #- wget
